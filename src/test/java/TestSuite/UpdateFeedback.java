@@ -35,7 +35,7 @@ public class UpdateFeedback extends Initialization {
 		Utilities.closeDriver(driver);
 	}
 	
-//	@Test(dataProvider = "updateFeedbackData", dataProviderClass = UpdateFeedbackData.class)
+	@Test(dataProvider = "updateFeedbackData", dataProviderClass = UpdateFeedbackData.class)
 	public void checkUpdateFeedback(String id, String level, String comment, String expectedMsg) throws Exception {
 		FeedbackScreen.update(driver, id, level, comment, expectedMsg);
 	}
