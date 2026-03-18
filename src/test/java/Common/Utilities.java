@@ -52,70 +52,70 @@ public class Utilities {
 
 	public Utilities(Class<?> testClass) {
 
-	    try {
-	        Properties prop = new Properties();
-	        prop.load(new FileInputStream(LOGGER_CONF_PATH));
+		try {
+			Properties prop = new Properties();
+			prop.load(new FileInputStream(LOGGER_CONF_PATH));
 
-	        // Lấy package name từ class test đang chạy
-	        String packageName = testClass.getPackage().getName();
+			// Lấy package name từ class test đang chạy
+			String packageName = testClass.getPackage().getName();
 
-	        if (packageName.contains("TestSuite.")) {
-	        	packageName = packageName.replaceFirst(".*TestSuite\\.", "");
-	        }
+			if (packageName.contains("TestSuite.")) {
+				packageName = packageName.replaceFirst(".*TestSuite\\.", "");
+			}
 
-	        String folderPath = packageName.replace('.', File.separatorChar);
-	        String className = testClass.getSimpleName();
+			String folderPath = packageName.replace('.', File.separatorChar);
+			String className = testClass.getSimpleName();
 
-	        resultFolder = System.getProperty("user.dir")
-	                        + File.separator + "result"
-	                        + File.separator + folderPath
-	                        + File.separator + className
-	                        + File.separator;
+			resultFolder = System.getProperty("user.dir")
+					+ File.separator + "result"
+					+ File.separator + folderPath
+					+ File.separator + className
+					+ File.separator;
 
-	        createFolder(resultFolder);
+			createFolder(resultFolder);
 
-	        prop.setProperty("log4j.appender.file.File", resultFolder + "ResultLog.log");
-	        prop.store(new FileOutputStream(LOGGER_CONF_PATH), null);
+			prop.setProperty("log4j.appender.file.File", resultFolder + "ResultLog.log");
+			prop.store(new FileOutputStream(LOGGER_CONF_PATH), null);
 
-	    } catch (IOException e) {
-	        e.printStackTrace();
-	    }
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
-	
+
 	public static void createFolder(String folderPath) {
 		// Tạo một đối tượng File với đường dẫn của thư mục mới
-        File folder = new File(folderPath);
+		File folder = new File(folderPath);
 
-        // Kiểm tra xem thư mục đã tồn tại hay không
-        if (!folder.exists()) {
-            // Tạo thư mục mới
-            boolean created = folder.mkdirs(); // Dùng mkdirs để tạo các thư mục cha nếu chưa tồn tại
-            if (!created) {
-            	System.out.println("Không thể tạo thư mục: " + folderPath);
-            }
-        } else {
+		// Kiểm tra xem thư mục đã tồn tại hay không
+		if (!folder.exists()) {
+			// Tạo thư mục mới
+			boolean created = folder.mkdirs(); // Dùng mkdirs để tạo các thư mục cha nếu chưa tồn tại
+			if (!created) {
+				System.out.println("Không thể tạo thư mục: " + folderPath);
+			}
+		} else {
 //            System.out.println("Thư mục đã tồn tại.");
-        }
+		}
 	}
-	
+
 	// Write information to log file
 	public static void printWithTestID(String msg, Level level, Throwable... e) {
 		switch (level.intLevel()) {
-		case 0:
-			logger.debug("[TestID:" + testID + "]" + msg);
-			break;
-		case 1:
-			logger.info("[TestID:" + testID + "]" + msg);
-			break;
-		case 3:
-			if (0 == e.length) {
-				logger.error("[TestID:" + testID + "]" + msg);
-			} else {
-				logger.error("[TestID:" + testID + "]" + msg, e[0]);
-			}
-			break;
-		default:
-			break;
+			case 0:
+				logger.debug("[TestID:" + testID + "]" + msg);
+				break;
+			case 1:
+				logger.info("[TestID:" + testID + "]" + msg);
+				break;
+			case 3:
+				if (0 == e.length) {
+					logger.error("[TestID:" + testID + "]" + msg);
+				} else {
+					logger.error("[TestID:" + testID + "]" + msg, e[0]);
+				}
+				break;
+			default:
+				break;
 		}
 	}
 
@@ -197,7 +197,7 @@ public class Utilities {
 				actions.moveToElement(element);
 				actions.perform();
 //				element.click();
-				
+
 				JavascriptExecutor js = (JavascriptExecutor) driver;
 				js.executeScript("arguments[0].click();", element);
 				TimeUnit.SECONDS.sleep(1);
@@ -207,7 +207,7 @@ public class Utilities {
 			}
 			timeout = System.currentTimeMillis() - startTime;
 		}
-        assertElementVisible(driver, newLocator);
+		assertElementVisible(driver, newLocator);
 	}
 
 	// Click one element and wait one element visible, if this element is not visible, click again
@@ -217,7 +217,7 @@ public class Utilities {
 
 	// Click one element and wait one expected element disappear
 	public static void clickObscuredElementToNotVisible(WebDriver driver, By locator, By expectedElementLocator,
-			int timeInSecond) {
+														int timeInSecond) {
 		long startTime = System.currentTimeMillis();
 		long timeout = System.currentTimeMillis() - startTime;
 		waitForElementClickable(driver, locator, 1);
@@ -248,26 +248,6 @@ public class Utilities {
 		}
 	}
 
-	// Input data into edit field (type one by one for long strings to trigger JS events properly)
-//	public static void sendKeys(WebDriver driver, By locator, String inputData) {
-//		waitForElementVisibility(driver, locator);
-//		try {
-//			WebElement element = driver.findElement(locator);
-//			// Chuỗi dài > 200 ký tự → nhập từng ký tự để trigger JS validation đúng
-//			if (inputData.length() > 200) {
-//				for (char c : inputData.toCharArray()) {
-//					element.sendKeys(String.valueOf(c));
-//				}
-//			} else {
-//				element.sendKeys(inputData);
-//			}
-//			TimeUnit.SECONDS.sleep(Constant.WAIT_INTERVAL);
-//			element.sendKeys(Keys.TAB);
-//		} catch (Exception e) {
-//			Assert.fail("Could not input data: " + e.getMessage());
-//		}
-//	}
-
 	// Input data into edit field
 	public static void sendKeys(WebDriver driver, String xpath, String inputData) {
 		sendKeys(driver, By.xpath(xpath), inputData);
@@ -277,7 +257,7 @@ public class Utilities {
 	public static void clearInputOld(WebDriver driver, By locator) {
 		try {
 			WebElement element = driver.findElement(locator);
-            element.click();
+			element.click();
 			element.sendKeys(Keys.CONTROL + "a");
 			element.sendKeys(Keys.DELETE);
 		} catch (Exception e) {
@@ -286,25 +266,23 @@ public class Utilities {
 	}
 
 	public static void clearInput(WebDriver driver, By locator) {
-	    WebElement element = driver.findElement(locator);
-	    JavascriptExecutor js = (JavascriptExecutor) driver;
+		WebElement element = driver.findElement(locator);
+		JavascriptExecutor js = (JavascriptExecutor) driver;
 
-	    try {
-	        js.executeScript(
-	            "arguments[0].value='';" +
-	            "arguments[0].innerText='';" +
-	            "arguments[0].dispatchEvent(new Event('input', { bubbles: true }));" +
-	            "arguments[0].dispatchEvent(new Event('change', { bubbles: true }));",
-	            element
-	        );
-	    } catch (Exception e) {
-	        element.click();
-	        element.sendKeys(Keys.chord(Keys.CONTROL, "a"));
-	        element.sendKeys(Keys.BACK_SPACE);
-	    }
+		try {
+			js.executeScript(
+					"arguments[0].value='';" +
+							"arguments[0].innerText='';" +
+							"arguments[0].dispatchEvent(new Event('input', { bubbles: true }));" +
+							"arguments[0].dispatchEvent(new Event('change', { bubbles: true }));",
+					element
+			);
+		} catch (Exception e) {
+			element.click();
+			element.sendKeys(Keys.chord(Keys.CONTROL, "a"));
+			element.sendKeys(Keys.BACK_SPACE);
+		}
 	}
-
-
 
 
 	// Input data into field and validate data after input
@@ -315,7 +293,7 @@ public class Utilities {
 			assertInputValue(driver, locator, expectedValue);
 		}
 	}
-	
+
 	// Input data into field and NOT validate data after input
 	public static void inputValue(WebDriver driver, By locator, String inputData) {
 		if (inputData != null) {
@@ -444,7 +422,7 @@ public class Utilities {
 //                System.out.println("aaa: " + filePath);
 				Files.copy(scrFile.toPath(), new File(filePath).toPath(), StandardCopyOption.REPLACE_EXISTING);
 			} catch (IOException e) {
-				 Assert.fail("Could not capture screen: " + e.getMessage());
+				Assert.fail("Could not capture screen: " + e.getMessage());
 			}
 		} catch (Exception e) {
 			printWithTestID(e.getMessage(), Level.ERROR, e);
@@ -456,37 +434,37 @@ public class Utilities {
 		WebDriver driver = null;
 //		killBrowser(browserType);
 		switch (browserType) {
-		case Constant.EDGE_BROWSER: {
-			System.setProperty("webdriver.edge.driver", EdgeDriverPath);
-			driver = new EdgeDriver();
-			break;
-		}
-		case Constant.CHROME_BROWSER: {
-			System.setProperty("webdriver.chrome.driver", ChromeDriverPath);
-			ChromeOptions options = new ChromeOptions();
+			case Constant.EDGE_BROWSER: {
+				System.setProperty("webdriver.edge.driver", EdgeDriverPath);
+				driver = new EdgeDriver();
+				break;
+			}
+			case Constant.CHROME_BROWSER: {
+				System.setProperty("webdriver.chrome.driver", ChromeDriverPath);
+				ChromeOptions options = new ChromeOptions();
 //			options.addArguments("--headless");  // Chạy ẩn
-			options.addArguments("--no-sandbox");
-			options.addArguments("--disable-dev-shm-usage");
-			options.addArguments("--disable-gpu"); // (Linux thường cần)
-			options.addArguments("--window-size=1920,1080"); // Đảm bảo đủ hiển thị layout
-			WebDriverManager.chromedriver().setup();
-			driver = new ChromeDriver(options);
-			break;
-		}
-		case Constant.FIREFOX_BROWSER: {
-			//
-		}
-		case Constant.MSEDGE_BROWSER:
-			System.setProperty("webdriver.edge.driver", MSEdgeDriverPath);
-			driver = new EdgeDriver();
-			break;
+				options.addArguments("--no-sandbox");
+				options.addArguments("--disable-dev-shm-usage");
+				options.addArguments("--disable-gpu"); // (Linux thường cần)
+				options.addArguments("--window-size=1920,1080"); // Đảm bảo đủ hiển thị layout
+				WebDriverManager.chromedriver().setup();
+				driver = new ChromeDriver(options);
+				break;
+			}
+			case Constant.FIREFOX_BROWSER: {
+				//
+			}
+			case Constant.MSEDGE_BROWSER:
+				System.setProperty("webdriver.edge.driver", MSEdgeDriverPath);
+				driver = new EdgeDriver();
+				break;
 
-		case Constant.IE_BROWSER: {
-			System.setProperty("webdriver.ie.driver", IEDriverPath);
-			driver = new InternetExplorerDriver();
-			break;
-		}
-		default:
+			case Constant.IE_BROWSER: {
+				System.setProperty("webdriver.ie.driver", IEDriverPath);
+				driver = new InternetExplorerDriver();
+				break;
+			}
+			default:
 		}
 		driver.manage().window().maximize();
 		return driver;
@@ -519,46 +497,46 @@ public class Utilities {
 	// Kill browser
 	public static void killBrowser(String browserType) {
 		switch (browserType) {
-		case Constant.EDGE_BROWSER: {
-			killProcess("MicrosoftEdge.exe");
-			killProcess("MicrosoftWebDriver.exe");
-			break;
-		}
-		case Constant.MSEDGE_BROWSER: {
-			killProcess("msedgedriver.exe");
-			killProcess("msedge.exe");
-			break;
-		}
-		case Constant.CHROME_BROWSER: {
-			killProcess("chrome.exe");
-			killProcess("chromedriver.exe");
-			break;
-		}
-		case Constant.FIREFOX_BROWSER: {
-			killProcess("firefox.exe");
-			break;
-		}
-		case Constant.IE_BROWSER: {
-			killProcess("iexplore.exe");
-			break;
-		}
-		default:
+			case Constant.EDGE_BROWSER: {
+				killProcess("MicrosoftEdge.exe");
+				killProcess("MicrosoftWebDriver.exe");
+				break;
+			}
+			case Constant.MSEDGE_BROWSER: {
+				killProcess("msedgedriver.exe");
+				killProcess("msedge.exe");
+				break;
+			}
+			case Constant.CHROME_BROWSER: {
+				killProcess("chrome.exe");
+				killProcess("chromedriver.exe");
+				break;
+			}
+			case Constant.FIREFOX_BROWSER: {
+				killProcess("firefox.exe");
+				break;
+			}
+			case Constant.IE_BROWSER: {
+				killProcess("iexplore.exe");
+				break;
+			}
+			default:
 		}
 	}
 
 	// Refresh screen by press F5 key
-	public static void refreshScreen(WebDriver driver) throws InterruptedException {		
-	    driver.navigate().refresh();
+	public static void refreshScreen(WebDriver driver) throws InterruptedException {
+		driver.navigate().refresh();
 
-	    // Chờ document load xong
-	    new WebDriverWait(driver, Duration.ofSeconds(Constant.WAIT_REFRESH_SCREEN))
-	            .until(webDriver ->
-	                    ((JavascriptExecutor) webDriver)
-	                            .executeScript("return document.readyState")
-	                            .equals("complete")
-	            );
-	    
-	    TimeUnit.SECONDS.sleep(2);
+		// Chờ document load xong
+		new WebDriverWait(driver, Duration.ofSeconds(Constant.WAIT_REFRESH_SCREEN))
+				.until(webDriver ->
+						((JavascriptExecutor) webDriver)
+								.executeScript("return document.readyState")
+								.equals("complete")
+				);
+
+		TimeUnit.SECONDS.sleep(2);
 	}
 
 	// Check element visible
@@ -579,14 +557,14 @@ public class Utilities {
 		}
 		return false;
 	}
-	
+
 	// Move the mouse cursor to a WebElement
 	public static void mouseHover(WebDriver driver, String elementXpath) {
 		Actions actions = new Actions(driver);
 		WebElement element = driver.findElement(By.xpath(elementXpath));
 		actions.moveToElement(element).perform();
 	}
-	
+
 	// Count elements by xpath
 	public static int getXpathCount(WebDriver driver, String elementXpath) {
 		List<WebElement> listElements = driver.findElements(By.xpath(elementXpath));
@@ -596,20 +574,20 @@ public class Utilities {
 		}
 		return count;
 	}
-	
+
 	// Scroll to an element
 	public static void scrollToElement(WebDriver driver, String elementXpath) throws InterruptedException {
 		JavascriptExecutor js = (JavascriptExecutor) driver;
-		
-        //Locating element by link text and store in variable "Element"        		
-        WebElement element = driver.findElement(By.xpath(elementXpath));
 
-        // Scrolling down the page till the element is found		
-        js.executeScript("arguments[0].scrollIntoView();", element);
-        
-        TimeUnit.SECONDS.sleep(1);
+		//Locating element by link text and store in variable "Element"
+		WebElement element = driver.findElement(By.xpath(elementXpath));
+
+		// Scrolling down the page till the element is found
+		js.executeScript("arguments[0].scrollIntoView();", element);
+
+		TimeUnit.SECONDS.sleep(1);
 	}
-	
+
 	// Checked to checkbox
 	public static void checked(WebDriver driver, By locator) {
 		try {
@@ -624,243 +602,256 @@ public class Utilities {
 			Assert.fail("Could not checked to element: " + locator + ": " + e.getMessage());
 		}
 	}
-	
+
 	// Click element
 	public static void click(WebDriver driver, By locator) {
-	    try {
-	        WebDriverWait wait = new WebDriverWait(
-	                driver,
-	                Duration.ofSeconds(Constant.WAIT_ELEMENT_CLICKABLE)
-	        );
+		try {
+			WebDriverWait wait = new WebDriverWait(
+					driver,
+					Duration.ofSeconds(Constant.WAIT_ELEMENT_CLICKABLE)
+			);
 
-	        WebElement element = wait.until(
-	                ExpectedConditions.presenceOfElementLocated(locator)
-	        );
+			WebElement element = wait.until(
+					ExpectedConditions.presenceOfElementLocated(locator)
+			);
 
-	        // Scroll element vào giữa màn hình
-	        ((JavascriptExecutor) driver).executeScript(
-	                "arguments[0].scrollIntoView({block:'center', inline:'nearest'});",
-	                element
-	        );
+			// Scroll element vào giữa màn hình
+			((JavascriptExecutor) driver).executeScript(
+					"arguments[0].scrollIntoView({block:'center', inline:'nearest'});",
+					element
+			);
 
-	        // Chờ element thật sự clickable sau khi scroll
-	        wait.until(ExpectedConditions.elementToBeClickable(element));
+			// Chờ element thật sự clickable sau khi scroll
+			wait.until(ExpectedConditions.elementToBeClickable(element));
 
-	        // Click
-	        element.click();
+			// Click
+			element.click();
 
-	        TimeUnit.SECONDS.sleep(Constant.WAIT_INTERVAL*2);
+			TimeUnit.SECONDS.sleep(Constant.WAIT_INTERVAL*2);
 
-	    } catch (Exception e) {
-	        Assert.fail("Could not click element: " + locator + " | " + e.getMessage());
-	    }
+		} catch (Exception e) {
+			Assert.fail("Could not click element: " + locator + " | " + e.getMessage());
+		}
 	}
-	
+
 	// Click dropdown
 	public static void clickDropdown(WebDriver driver, By locator) {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        
-        // Chờ dropdown sẵn sàng để click
-        WebElement dropdown = wait.until(ExpectedConditions.elementToBeClickable(locator));
-        
-        // Click để đảm bảo nó mở ra
-        dropdown.click();
+		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+		// Chờ dropdown sẵn sàng để click
+		WebElement dropdown = wait.until(ExpectedConditions.elementToBeClickable(locator));
+
+		// Click để đảm bảo nó mở ra
+		dropdown.click();
 	}
-	
+
+	public static void selectNativeSelectByVisibleText(WebDriver driver, String locatorXpath, String visibleText) {
+		if (!visibleText.isBlank() && !visibleText.isEmpty()) {
+			WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+			WebElement dropdown = wait.until(
+					ExpectedConditions.elementToBeClickable(By.xpath(locatorXpath))
+			);
+
+			Select select = new Select(dropdown);
+			select.selectByVisibleText(visibleText);
+		}
+	}
+
 	// Select by visible text
-    public static void selectByVisibleText(WebDriver driver, By locator, String visibleText) throws InterruptedException {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        
-        // Chờ dropdown sẵn sàng để click
-        WebElement dropdown = wait.until(ExpectedConditions.elementToBeClickable(locator));
-        
-        // Click để đảm bảo nó mở ra
-        dropdown.click();
-        TimeUnit.SECONDS.sleep(1);
-        
-        // Dùng Select để chọn theo text hiển thị
-        Select select = new Select(dropdown);
-        select.selectByVisibleText(visibleText);
-        
-        // Chờ 1s
-        TimeUnit.SECONDS.sleep(1);
-    }
-    
-    public static void writeTestResult(String filePath, String sheetName, String testCaseId, String result) {
-        try (FileInputStream fis = new FileInputStream(filePath);
-             Workbook workbook = new XSSFWorkbook(fis)) {
+	public static void selectByVisibleText(WebDriver driver, By locator, String visibleText) throws InterruptedException {
+		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
-            Sheet sheet = workbook.getSheet(sheetName);
-            if (sheet == null) throw new RuntimeException("Không tìm thấy sheet '" + sheetName + "'");
+		// Chờ dropdown sẵn sàng để click
+		WebElement dropdown = wait.until(ExpectedConditions.elementToBeClickable(locator));
 
-            // Đọc hàng đầu tiên (header row)
-            Row headerRow = sheet.getRow(0);
-            if (headerRow == null) throw new RuntimeException("Không tìm thấy header trong sheet '" + sheetName + "'");
+		// Click để đảm bảo nó mở ra
+		dropdown.click();
+		TimeUnit.SECONDS.sleep(1);
 
-            // Tìm vị trí các cột theo tên
-            Map<String, Integer> colIndex = new HashMap<>();
-            for (Cell cell : headerRow) {
-                String headerName = cell.getStringCellValue().trim();
-                colIndex.put(headerName, cell.getColumnIndex());
-            }
+		// Dùng Select để chọn theo text hiển thị
+		Select select = new Select(dropdown);
+		select.selectByVisibleText(visibleText);
 
-            // Lấy index của các cột cần
-            Integer testCaseCol = colIndex.getOrDefault("id", 0);
-            Integer resultCol   = colIndex.get("result");
-            Integer actualCol   = colIndex.get("actualResult");
-            Integer timeCol     = colIndex.get("time");
-            Integer testerCol   = colIndex.get("tester");
+		// Chờ 1s
+		TimeUnit.SECONDS.sleep(1);
+	}
 
-            if (resultCol == null || actualCol == null || timeCol == null || testerCol == null) {
-                throw new RuntimeException("Không tìm thấy 1 trong các cột: result, actualResult, time, tester trong file Excel!");
-            }
+	public static void writeTestResult(String filePath, String sheetName, String testCaseId, String result) {
+		try (FileInputStream fis = new FileInputStream(filePath);
+			 Workbook workbook = new XSSFWorkbook(fis)) {
 
-            boolean found = false;
-            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
-                Row row = sheet.getRow(i);
-                if (row == null) continue;
+			Sheet sheet = workbook.getSheet(sheetName);
+			if (sheet == null) throw new RuntimeException("Không tìm thấy sheet '" + sheetName + "'");
 
-                Cell cell = row.getCell(testCaseCol);
-                if (cell != null && cell.getStringCellValue().equalsIgnoreCase(testCaseId)) {
-                    found = true;
+			// Đọc hàng đầu tiên (header row)
+			Row headerRow = sheet.getRow(0);
+			if (headerRow == null) throw new RuntimeException("Không tìm thấy header trong sheet '" + sheetName + "'");
 
-                    // Ghi Result
-                    row.createCell(resultCol, CellType.STRING).setCellValue(result);
-                    
-                    // Ghi Actual
-                    row.createCell(actualCol, CellType.STRING).setCellValue("");
+			// Tìm vị trí các cột theo tên
+			Map<String, Integer> colIndex = new HashMap<>();
+			for (Cell cell : headerRow) {
+				String headerName = cell.getStringCellValue().trim();
+				colIndex.put(headerName, cell.getColumnIndex());
+			}
 
-                    // Ghi Time
-                    String now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-                    row.createCell(timeCol, CellType.STRING).setCellValue(now);
+			// Lấy index của các cột cần
+			Integer testCaseCol = colIndex.getOrDefault("id", 0);
+			Integer resultCol   = colIndex.get("result");
+			Integer actualCol   = colIndex.get("actualResult");
+			Integer timeCol     = colIndex.get("time");
+			Integer testerCol   = colIndex.get("tester");
 
-                    // Ghi Tester
-                    row.createCell(testerCol, CellType.STRING).setCellValue(Constant.TESTER_NAME);
-                    break;
-                }
-            }
+			if (resultCol == null || actualCol == null || timeCol == null || testerCol == null) {
+				throw new RuntimeException("Không tìm thấy 1 trong các cột: result, actualResult, time, tester trong file Excel!");
+			}
 
-            if (!found) {
-                System.out.println("Không tìm thấy id: " + testCaseId);
-            }
+			boolean found = false;
+			for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+				Row row = sheet.getRow(i);
+				if (row == null) continue;
 
-            // Ghi lại file
-            try (FileOutputStream fos = new FileOutputStream(filePath)) {
-                workbook.write(fos);
-            }
+				Cell cell = row.getCell(testCaseCol);
+				if (cell != null && cell.getStringCellValue().equalsIgnoreCase(testCaseId)) {
+					found = true;
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+					// Ghi Result
+					row.createCell(resultCol, CellType.STRING).setCellValue(result);
 
-    // Điền kết quả test vào file test case (dò cột theo tiêu đề hàng đầu)
-    public static void writeTestResult(String filePath, String sheetName, String testCaseId, String result, String actual) {
-        try (FileInputStream fis = new FileInputStream(filePath);
-             Workbook workbook = new XSSFWorkbook(fis)) {
+					// Ghi Actual
+					row.createCell(actualCol, CellType.STRING).setCellValue("");
 
-            Sheet sheet = workbook.getSheet(sheetName);
-            if (sheet == null) throw new RuntimeException("Không tìm thấy sheet '" + sheetName + "'");
+					// Ghi Time
+					String now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+					row.createCell(timeCol, CellType.STRING).setCellValue(now);
 
-            // Lấy hàng tiêu đề (header)
-            Row headerRow = sheet.getRow(0);
-            if (headerRow == null) throw new RuntimeException("Không tìm thấy header trong sheet '" + sheetName + "'");
+					// Ghi Tester
+					row.createCell(testerCol, CellType.STRING).setCellValue(Constant.TESTER_NAME);
+					break;
+				}
+			}
 
-            // Tạo map để lưu tên cột -> index
-            Map<String, Integer> colIndex = new HashMap<>();
-            for (Cell cell : headerRow) {
-                String headerName = cell.getStringCellValue().trim();
-                colIndex.put(headerName, cell.getColumnIndex());
-            }
+			if (!found) {
+				System.out.println("Không tìm thấy id: " + testCaseId);
+			}
 
-            // Lấy index cột
-            Integer testCaseCol = colIndex.getOrDefault("id", 0);
-            Integer resultCol   = colIndex.get("result");
-            Integer actualCol   = colIndex.get("actualResult");
-            Integer timeCol     = colIndex.get("time");
-            Integer testerCol   = colIndex.get("tester");
+			// Ghi lại file
+			try (FileOutputStream fos = new FileOutputStream(filePath)) {
+				workbook.write(fos);
+			}
 
-            // Kiểm tra thiếu cột nào
-            List<String> missingCols = new ArrayList<>();
-            if (resultCol == null) missingCols.add("result");
-            if (actualCol == null) missingCols.add("actualResult");
-            if (timeCol == null) missingCols.add("time");
-            if (testerCol == null) missingCols.add("tester");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
-            if (!missingCols.isEmpty()) {
-                throw new RuntimeException("Thiếu cột trong file Excel: " + String.join(", ", missingCols));
-            }
+	// Điền kết quả test vào file test case (dò cột theo tiêu đề hàng đầu)
+	public static void writeTestResult(String filePath, String sheetName, String testCaseId, String result, String actual) {
+		try (FileInputStream fis = new FileInputStream(filePath);
+			 Workbook workbook = new XSSFWorkbook(fis)) {
 
-            boolean found = false;
-            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
-                Row row = sheet.getRow(i);
-                if (row == null) continue;
+			Sheet sheet = workbook.getSheet(sheetName);
+			if (sheet == null) throw new RuntimeException("Không tìm thấy sheet '" + sheetName + "'");
 
-                Cell cell = row.getCell(testCaseCol);
-                if (cell != null && cell.getStringCellValue().equalsIgnoreCase(testCaseId)) {
-                    found = true;
+			// Lấy hàng tiêu đề (header)
+			Row headerRow = sheet.getRow(0);
+			if (headerRow == null) throw new RuntimeException("Không tìm thấy header trong sheet '" + sheetName + "'");
 
-                    // Ghi Result
-                    row.createCell(resultCol, CellType.STRING).setCellValue(result);
+			// Tạo map để lưu tên cột -> index
+			Map<String, Integer> colIndex = new HashMap<>();
+			for (Cell cell : headerRow) {
+				String headerName = cell.getStringCellValue().trim();
+				colIndex.put(headerName, cell.getColumnIndex());
+			}
 
-                    // Ghi Actual
-                    row.createCell(actualCol, CellType.STRING).setCellValue(actual);
+			// Lấy index cột
+			Integer testCaseCol = colIndex.getOrDefault("id", 0);
+			Integer resultCol   = colIndex.get("result");
+			Integer actualCol   = colIndex.get("actualResult");
+			Integer timeCol     = colIndex.get("time");
+			Integer testerCol   = colIndex.get("tester");
 
-                    // Ghi Time
-                    String now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-                    row.createCell(timeCol, CellType.STRING).setCellValue(now);
+			// Kiểm tra thiếu cột nào
+			List<String> missingCols = new ArrayList<>();
+			if (resultCol == null) missingCols.add("result");
+			if (actualCol == null) missingCols.add("actualResult");
+			if (timeCol == null) missingCols.add("time");
+			if (testerCol == null) missingCols.add("tester");
 
-                    // Ghi Tester
-                    row.createCell(testerCol, CellType.STRING).setCellValue(Constant.TESTER_NAME);
+			if (!missingCols.isEmpty()) {
+				throw new RuntimeException("Thiếu cột trong file Excel: " + String.join(", ", missingCols));
+			}
 
-                    break;
-                }
-            }
+			boolean found = false;
+			for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+				Row row = sheet.getRow(i);
+				if (row == null) continue;
 
-            if (!found) {
-                System.out.println("Không tìm thấy id: " + testCaseId);
-            }
+				Cell cell = row.getCell(testCaseCol);
+				if (cell != null && cell.getStringCellValue().equalsIgnoreCase(testCaseId)) {
+					found = true;
 
-            // Ghi lại file
-            try (FileOutputStream fos = new FileOutputStream(filePath)) {
-                workbook.write(fos);
-            }
+					// Ghi Result
+					row.createCell(resultCol, CellType.STRING).setCellValue(result);
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+					// Ghi Actual
+					row.createCell(actualCol, CellType.STRING).setCellValue(actual);
 
-    
-    // Focus out
-    public static void focusOut(WebDriver driver, By locator) {
-        try {
-            WebElement element = driver.findElement(locator);
-            // Đặt focus vào element trước
-            element.click();
-            // Nhấn phím TAB để focus ra khỏi nó
-            Actions actions = new Actions(driver);
-            actions.sendKeys("\u0009").perform(); // \u0009 là mã Unicode của phím TAB
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+					// Ghi Time
+					String now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+					row.createCell(timeCol, CellType.STRING).setCellValue(now);
 
-    // Get actual text from throw exception
-    public static String getActualText(String input) {
-        Pattern pattern = Pattern.compile("Actual: \"([^\"]+)\"");
-        Matcher matcher = pattern.matcher(input);
-        if (matcher.find()) {
-            return matcher.group(1);
-        }
-        return "";
-    }
-    
-    // Validate one element checked
+					// Ghi Tester
+					row.createCell(testerCol, CellType.STRING).setCellValue(Constant.TESTER_NAME);
+
+					break;
+				}
+			}
+
+			if (!found) {
+				System.out.println("Không tìm thấy id: " + testCaseId);
+			}
+
+			// Ghi lại file
+			try (FileOutputStream fos = new FileOutputStream(filePath)) {
+				workbook.write(fos);
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+
+	// Focus out
+	public static void focusOut(WebDriver driver, By locator) {
+		try {
+			WebElement element = driver.findElement(locator);
+			// Đặt focus vào element trước
+			element.click();
+			// Nhấn phím TAB để focus ra khỏi nó
+			Actions actions = new Actions(driver);
+			actions.sendKeys("\u0009").perform(); // \u0009 là mã Unicode của phím TAB
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	// Get actual text from throw exception
+	public static String getActualText(String input) {
+		Pattern pattern = Pattern.compile("Actual: \"([^\"]+)\"");
+		Matcher matcher = pattern.matcher(input);
+		if (matcher.find()) {
+			return matcher.group(1);
+		}
+		return "";
+	}
+
+	// Validate one element checked
 	public static void assertElementChecked(WebElement element) {
 		Assert.assertTrue(element.isSelected(), element.toString() + " is not selected");
 	}
-	
+
 	// Validate one element checked
 	public static void assertElementChecked(Object object, By locator) {
 		try {
@@ -875,7 +866,7 @@ public class Utilities {
 			Assert.fail("Element with locator " + locator + " doesn't exist");
 		}
 	}
-	
+
 	// Assert 2 integers
 	public static void assertInteger(int expectedValue, int actualValue) {
 		String msg = "";
@@ -887,22 +878,22 @@ public class Utilities {
 			Assert.fail(msg);
 		}
 	}
-	
+
 	// Validate text valued of checked element is same with expected value and this element is visible
 	public static void assertHTMLValidate(WebDriver driver, By locator, String expectedMsg) {
 		WebElement element = driver.findElement(locator);
 		JavascriptExecutor js = (JavascriptExecutor) driver;
 		String actualMsg = (String) js.executeScript(
-	            "return arguments[0].validationMessage;", element
-	        );
+				"return arguments[0].validationMessage;", element
+		);
 		assertString(expectedMsg, actualMsg);
 	}
-	
+
 	// Validate one element disabled
 	public static void assertElementDisabled(WebElement element) {
 		Assert.assertFalse(element.isEnabled(), element.toString() + " is enabled");
 	}
-	
+
 	// Validate one element visible
 	public static void assertElementDisabled(Object object, By locator) {
 		try {
@@ -917,70 +908,69 @@ public class Utilities {
 			Assert.fail("Element with locator " + locator + " doesn't exist");
 		}
 	}
-	
-    // Assert 2 doubles
-    public static void assertDouble(double expectedValue, double actualValue) {
-        String msg = "";
-        if (expectedValue == actualValue) {
-            msg = "Value is correct: " + expectedValue;
-            Assert.assertTrue(true, msg);
-        } else {
-            msg = "Value is not correct: Expected: \"" + expectedValue + "\"; Actual: \"" + actualValue + "\"";
-            Assert.fail(msg);
-        }
-    }
-    
-    public static void selectDropdownByVisibleText(WebDriver driver, String locatorXpath, String visibleText) {
-        if (!visibleText.isBlank() && !visibleText.isEmpty()) {
-        	WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
-            // 1. Click vào dropdown button (combobox)
-            WebElement dropdownBtn = wait.until(
-                    ExpectedConditions.elementToBeClickable(By.xpath(locatorXpath))
-            );
-            dropdownBtn.click();
+	// Assert 2 doubles
+	public static void assertDouble(double expectedValue, double actualValue) {
+		String msg = "";
+		if (expectedValue == actualValue) {
+			msg = "Value is correct: " + expectedValue;
+			Assert.assertTrue(true, msg);
+		} else {
+			msg = "Value is not correct: Expected: \"" + expectedValue + "\"; Actual: \"" + actualValue + "\"";
+			Assert.fail(msg);
+		}
+	}
 
-            // 2. Chờ danh sách option hiển thị
-            // Radix UI thường render option với role="option"
-            List<WebElement> options = wait.until(
-                    ExpectedConditions.visibilityOfAllElementsLocatedBy(
-                            By.xpath("//div[@role='option' or @data-slot='select-item']")
-                    )
-            );
+	public static void selectDropdownByVisibleText(WebDriver driver, String locatorXpath, String visibleText) {
+		if (!visibleText.isBlank() && !visibleText.isEmpty()) {
+			WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
-            // 3. Duyệt và click option theo visible text
-            for (WebElement option : options) {
-                if (option.getText().trim().equals(visibleText)) {
-                    option.click();
-                    return;
-                }
-            }
+			// 1. Click vào dropdown button (combobox)
+			WebElement dropdownBtn = wait.until(
+					ExpectedConditions.elementToBeClickable(By.xpath(locatorXpath))
+			);
+			dropdownBtn.click();
 
-            throw new NoSuchElementException(
-                    "Không tìm thấy option với text: " + visibleText
-            );
-        }
-    }
-    
-    public static void setSwitchStatus(WebDriver driver, String locatorXpath, String status) {
-    	if (!status.isBlank() && !status.isEmpty()) {
-            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+			// 2. Chờ danh sách option hiển thị
+			// Radix UI thường render option với role="option"
+			List<WebElement> options = wait.until(
+					ExpectedConditions.visibilityOfAllElementsLocatedBy(
+							By.xpath("//div[@role='option' or @data-slot='select-item']")
+					)
+			);
 
-            WebElement switchBtn = wait.until(
-                    ExpectedConditions.elementToBeClickable(By.xpath(locatorXpath))
-            );
+			// 3. Duyệt và click option theo visible text
+			for (WebElement option : options) {
+				if (option.getText().trim().equals(visibleText)) {
+					option.click();
+					return;
+				}
+			}
 
-            // Lấy trạng thái hiện tại
-            String ariaChecked = switchBtn.getAttribute("aria-checked");
-            boolean isCurrentlyOn = "true".equalsIgnoreCase(ariaChecked);
+			throw new NoSuchElementException(
+					"Không tìm thấy option với text: " + visibleText
+			);
+		}
+	}
 
-            boolean shouldBeOn = status.equalsIgnoreCase("ON");
+	public static void setSwitchStatus(WebDriver driver, String locatorXpath, String status) {
+		if (!status.isBlank() && !status.isEmpty()) {
+			WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
-            // Nếu trạng thái hiện tại khác trạng thái mong muốn → click
-            if (isCurrentlyOn != shouldBeOn) {
-                switchBtn.click();
-            }
-    	}
-    }
+			WebElement switchBtn = wait.until(
+					ExpectedConditions.elementToBeClickable(By.xpath(locatorXpath))
+			);
 
+			// Lấy trạng thái hiện tại
+			String ariaChecked = switchBtn.getAttribute("aria-checked");
+			boolean isCurrentlyOn = "true".equalsIgnoreCase(ariaChecked);
+
+			boolean shouldBeOn = status.equalsIgnoreCase("ON");
+
+			// Nếu trạng thái hiện tại khác trạng thái mong muốn → click
+			if (isCurrentlyOn != shouldBeOn) {
+				switchBtn.click();
+			}
+		}
+	}
 }

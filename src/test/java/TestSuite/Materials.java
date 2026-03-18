@@ -26,8 +26,8 @@ public class Materials extends Initialization {
     public void setUpMethod(Method method) throws Exception {
         Utilities.testID = method.getName();
         Utilities.refreshScreen(driver);
-        Utilities.click(driver, By.xpath(MaterialScreen.MATERIALS_TAB_XPATH));
         Utilities.clickObscuredElement(driver, MaterialScreen.SELECT_MATERIALS_BTN_XPATH, MaterialScreen.EDIT_MATERIALS_BTN_XPATH);
+        Utilities.clickObscuredElement(driver, MaterialScreen.EDIT_MATERIALS_BTN_XPATH, MaterialScreen.SAVE_BTN_XPATH);
     }
 
     @AfterClass()

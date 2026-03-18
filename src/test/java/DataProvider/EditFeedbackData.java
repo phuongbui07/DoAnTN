@@ -19,7 +19,7 @@ public class EditFeedbackData {
         List<Object[]> testData = new ArrayList<>();
 
         // CHỈ ĐỊNH ROW MUỐN CHẠY (THEO SỐ DÒNG EXCEL)
-       // Set<Integer> rowsToRun = new HashSet<>(Arrays.asList(15,16,17,18,19,20,21,22,23,24,25,26,27));
+        Set<Integer> rowsToRun = new HashSet<>(Arrays.asList(15,16,17,18,19,20,21,22,23,24,25,26,27));
 
         try (FileInputStream fis = new FileInputStream(excelFile);
              Workbook workbook = new XSSFWorkbook(fis)) {
@@ -37,12 +37,10 @@ public class EditFeedbackData {
                 currentRowNum = row.getRowNum() + 1; // Excel row index (1-based)
 
                 // Bỏ header + row không nằm trong danh sách cần chạy
-//                if (currentRowNum == 1 || !rowsToRun.contains(currentRowNum)) {
-//                    continue;
-//                }
-                if (currentRowNum == 1) {
+                if (currentRowNum == 1 || !rowsToRun.contains(currentRowNum)) {
                     continue;
                 }
+
 
                 if (row == null || ExcelUtils.isRowEmpty(row)) continue;
 
