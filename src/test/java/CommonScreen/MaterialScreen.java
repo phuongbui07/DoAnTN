@@ -6,6 +6,7 @@ import org.openqa.selenium.WebDriver;
 
 import Common.Constant;
 import Common.Utilities;
+import org.openqa.selenium.WebElement;
 
 public class MaterialScreen {
     public static final String FILE_PATH				= "src/test/resources/TestData.xlsx";
@@ -114,6 +115,29 @@ public class MaterialScreen {
 
             Utilities.inputValueAndValidate(driver, By.xpath(NOTE_TXT_XPATH), Note, Note.length() <= 2000 ? Note : Note.substring(0, 2000));
             Utilities.setSwitchStatus(driver, NOTIFY_BTN_XPATH, Notify);
+
+            // ===== Check expected disabled =====
+            boolean expectDisabled = expectedMsg != null
+                    && expectedMsg.toLowerCase().contains("disable");
+
+            if (expectDisabled) {
+                WebElement saveBtn = driver.findElement(By.xpath(SAVE_BTN_XPATH));
+
+                String disabled = saveBtn.getAttribute("disabled");
+                String ariaDisabled = saveBtn.getAttribute("aria-disabled");
+
+                boolean isDisabled = (disabled != null)
+                        || "true".equalsIgnoreCase(ariaDisabled)
+                        || !saveBtn.isEnabled();
+
+                if (!isDisabled) {
+                    throw new AssertionError("Save button phải bị disable nhưng đang enable");
+                }
+
+                Utilities.writeTestResult(FILE_PATH, MATERIALS_SHEET_NAME, id, "PASS");
+                return;
+            }
+
             Utilities.clickObscuredElement(driver, SAVE_BTN_XPATH, MSG_XPATH);
             Utilities.captureScreen(driver, id);
             // Thực hiện test

@@ -248,6 +248,26 @@ public class Utilities {
 		}
 	}
 
+	// Input data into edit field (type one by one for long strings to trigger JS events properly)
+//	public static void sendKeys(WebDriver driver, By locator, String inputData) {
+//		waitForElementVisibility(driver, locator);
+//		try {
+//			WebElement element = driver.findElement(locator);
+//			// Chuỗi dài > 200 ký tự → nhập từng ký tự để trigger JS validation đúng
+//			if (inputData.length() > 200) {
+//				for (char c : inputData.toCharArray()) {
+//					element.sendKeys(String.valueOf(c));
+//				}
+//			} else {
+//				element.sendKeys(inputData);
+//			}
+//			TimeUnit.SECONDS.sleep(Constant.WAIT_INTERVAL);
+//			element.sendKeys(Keys.TAB);
+//		} catch (Exception e) {
+//			Assert.fail("Could not input data: " + e.getMessage());
+//		}
+//	}
+
 	// Input data into edit field
 	public static void sendKeys(WebDriver driver, String xpath, String inputData) {
 		sendKeys(driver, By.xpath(xpath), inputData);
@@ -675,6 +695,16 @@ public class Utilities {
 
 		// Chờ 1s
 		TimeUnit.SECONDS.sleep(1);
+	}
+
+	private static void openDatePicker(WebDriver driver, String inputXpath) {
+		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+		WebElement input = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(inputXpath)));
+
+		((JavascriptExecutor) driver).executeScript(
+				"arguments[0].scrollIntoView({block:'center'});", input
+		);
+		((JavascriptExecutor) driver).executeScript("arguments[0].click();", input);
 	}
 
 	public static void writeTestResult(String filePath, String sheetName, String testCaseId, String result) {
