@@ -3,6 +3,7 @@ package TestSuite;
 import java.lang.reflect.Method;
 
 import CommonScreen.LoginEPScreen;
+import DataProvider.LoginData;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -24,8 +25,8 @@ public class Login extends Initialization {
         Utilities.closeDriver(driver);
     }
 
-    @Test(dataProvider = "loginData", dataProviderClass = GradeData.class)
-    public void checkLogin(String id, String email, String password, String expectedMsg) throws Exception {
+    @Test(dataProvider = "loginData", dataProviderClass = LoginData.class)
+    public void LoginEP(String id, String email, String password, String expectedMsg) throws Exception {
         LoginEPScreen.checkLogin(driver, id, email, password, expectedMsg);
     }
 }

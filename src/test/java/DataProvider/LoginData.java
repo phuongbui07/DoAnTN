@@ -23,7 +23,7 @@ public class LoginData {
 
             Sheet sheet = workbook.getSheet("Login");
             if (sheet == null) {
-                throw new RuntimeException("Không tìm thấy sheet 'Grade' trong file Excel!");
+                throw new RuntimeException("Không tìm thấy sheet 'Login' trong file Excel!");
             }
 
             Iterator<Row> rowIterator = sheet.iterator();
