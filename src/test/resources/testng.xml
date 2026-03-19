@@ -6,14 +6,13 @@
     	<classes>
 <!--			<class name = "TestSuite.Grade"/>-->
 <!--            <class name = "TestSuite.ReviewAdjust"/>-->
-<!--	        <class name = "TestSuite.BulkAdjustment"/>-->
+	        <class name = "TestSuite.BulkAdjustment"/>
 <!--            <class name = "TestSuite.CreateFeedback"/>-->
 <!--            <class name = "TestSuite.UpdateFeedback"/>-->
 <!--            <class name = "TestSuite.DeleteFeedback"/>-->
 <!--            <class name = "TestSuite.Reports"/>-->
-			<class name = "TestSuite.Materials"/>
+<!--			<class name = "TestSuite.Materials"/>-->
 
-<!--            <class name = "TestSuite.CreateFeedback"/>-->
 		</classes>
 	</test> <!-- Test -->
 </suite> <!-- Suite -->

@@ -15,6 +15,11 @@ public class LoginScreen {
 	
 	// Button
 	public static final String LOGIN_BTN_XPATH			= "//button[normalize-space()='Sign in']";
+
+	// Msg
+	public static final String NO_PASSWORD		= "//p[@role='alert']";
+	public static final String NO_EMAIL		= "//p[@role='alert']";
+
 	
 	public static WebDriver openScreen(String browser) {
 		WebDriver driver = null;

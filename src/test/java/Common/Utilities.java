@@ -236,11 +236,44 @@ public class Utilities {
 	}
 
 	// Input data into edit field
+//	public static void sendKeys(WebDriver driver, By locator, String inputData) {
+//		waitForElementVisibility(driver, locator);
+//		try {
+//			WebElement element = driver.findElement(locator);
+//			element.sendKeys(inputData);
+//			TimeUnit.SECONDS.sleep(Constant.WAIT_INTERVAL);
+//			element.sendKeys(Keys.TAB);
+//		} catch (Exception e) {
+//			Assert.fail("Could not input data: " + e.getMessage());
+//		}
+//	}
+
+	// Input data into edit field
 	public static void sendKeys(WebDriver driver, By locator, String inputData) {
 		waitForElementVisibility(driver, locator);
 		try {
 			WebElement element = driver.findElement(locator);
-			element.sendKeys(inputData);
+
+			// 1) overwrite thay vì append
+			element.click();
+			TimeUnit.MILLISECONDS.sleep(100);
+			element.sendKeys(Keys.chord(Keys.CONTROL, "a"));
+			TimeUnit.MILLISECONDS.sleep(50);
+
+			// 2) text dài -> nhập theo chunk (giống gõ tay hơn, tránh fail với chuỗi dài)
+			int longTextThreshold = 500; // chỉnh 200/500/1000 tùy app
+			int chunkSize = 25;
+
+			if (inputData != null && inputData.length() > longTextThreshold) {
+				for (int i = 0; i < inputData.length(); i += chunkSize) {
+					String part = inputData.substring(i, Math.min(i + chunkSize, inputData.length()));
+					element.sendKeys(part);
+					TimeUnit.MILLISECONDS.sleep(10);
+				}
+			} else {
+				element.sendKeys(inputData);
+			}
+
 			TimeUnit.SECONDS.sleep(Constant.WAIT_INTERVAL);
 			element.sendKeys(Keys.TAB);
 		} catch (Exception e) {
@@ -308,7 +341,7 @@ public class Utilities {
 	// Input data into field and validate data after input
 	public static void inputValueAndValidate(WebDriver driver, By locator, String inputData, String expectedValue) {
 		if (!inputData.isBlank() && !inputData.isEmpty()) {
-			clearInput(driver, locator);
+			// clearInput(driver, locator);
 			sendKeys(driver, locator, inputData);
 			assertInputValue(driver, locator, expectedValue);
 		}
@@ -981,6 +1014,17 @@ public class Utilities {
 					"Không tìm thấy option với text: " + visibleText
 			);
 		}
+	}
+
+	public static void verifyText(WebDriver driver, By locator, String expectedText) {
+		waitForElementVisibility(driver, locator);
+		String actual = driver.findElement(locator).getText().trim();
+		Assert.assertEquals(actual, expectedText, "Text not matched for locator: " + locator);
+	}
+
+	public static void verifyURL(WebDriver driver, String expectedUrl) {
+		String actual = driver.getCurrentUrl();
+		Assert.assertEquals(actual, expectedUrl, "URL not matched");
 	}
 
 	public static void setSwitchStatus(WebDriver driver, String locatorXpath, String status) {
