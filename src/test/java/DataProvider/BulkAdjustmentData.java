@@ -17,6 +17,9 @@ public class BulkAdjustmentData {
 
         String excelFile = "src/test/resources/TestData.xlsx";
         List<Object[]> testData = new ArrayList<>();
+
+        // CHỈ ĐỊNH ROW MUỐN CHẠY (THEO SỐ DÒNG EXCEL)
+        Set<Integer> rowsToRun = new HashSet<>(Arrays.asList(2,3,4,5,6));
         
         try (FileInputStream fis = new FileInputStream(excelFile);
              Workbook workbook = new XSSFWorkbook(fis)) {
@@ -34,7 +37,11 @@ public class BulkAdjustmentData {
                 currentRowNum = row.getRowNum() + 1; // Excel row index (1-based)
 
                 // Bỏ header
-                if (currentRowNum == 1) {
+//                if (currentRowNum == 1) {
+//                    continue;
+//                }
+
+                if (currentRowNum == 1 || !rowsToRun.contains(currentRowNum)) {
                     continue;
                 }
 
