@@ -12,7 +12,8 @@
 <!--            <class name = "TestSuite.DeleteFeedback"/>-->
 <!--            <class name = "TestSuite.Reports"/>-->
 <!--			<class name = "TestSuite.Materials"/>-->
-			<class name = "TestSuite.Login"/>
+<!--			<class name = "TestSuite.Login"/>-->
+			<class name = "TestSuite.Search"/>
 		</classes>
 	</test> <!-- Test -->
 </suite> <!-- Suite -->

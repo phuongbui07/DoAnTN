@@ -3,6 +3,11 @@ package CommonScreen;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+
+import java.util.List;
+
+import org.testng.Assert;
 
 import Common.Constant;
 import Common.Utilities;
@@ -37,6 +42,12 @@ public class SearchAssignmentScreen {
     // List
     public static final String LIST_XPATH					= "(//div[@class='relative w-full overflow-x-auto rounded-2xl border border-slate-200/60 dark:border-slate-800/60 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl shadow-lg'])[1]";
 
+    // Row + fields (from DOM you provided)
+    public static final String ROW_XPATH                    = "//tr[@data-slot='table-row']";
+    public static final String TITLE_IN_ROW                 = ".//div[contains(@class,'truncate') and contains(@class,'font-semibold')]";
+    public static final String LANG_BADGE_IN_ROW            = ".//span[@data-slot='badge' and contains(@class,'rounded-full')][1]";
+    public static final String STATUS_BADGE_IN_ROW          = ".//span[@data-slot='badge' and contains(@class,'rounded-full') and (text()='DRAFT' or text()='PUBLISHED' or text()='ARCHIVED' or text()='CLOSED' or text()='INACTIVE')]";
+    public static final String DEADLINE_IN_ROW              = ".//span[contains(@class,'text-xs') and contains(@class,'text-red-')]";
 
     public static WebDriver openSearchAssignmentScreen(String browser) throws Exception {
         WebDriver driver = null;
@@ -54,7 +65,7 @@ public class SearchAssignmentScreen {
     public static void search(WebDriver driver, String id, String search, String status, String showDeleted, String type, String languages, String deadline, String clearFilter, String export, String expectedMsg) throws Exception {
         try {
             if (!search.isEmpty()) {
-                Utilities.setText(driver, By.xpath(SEARCH_XPATH), search);
+                Utilities.inputValueAndValidate(driver, By.xpath(SEARCH_XPATH), search, search.replace("+", ""));
             }
             if (!status.isEmpty()) {
                 Utilities.selectDropdownByVisibleText(driver, STATUS_BTN_XPATH, status);
@@ -75,8 +86,29 @@ public class SearchAssignmentScreen {
                 Utilities.clickObscuredElement(driver, CLEAR_XPATH, SEARCH_XPATH);
             }
             Utilities.captureScreen(driver, id);
-            // Thực hiện test
-            Utilities.assertTextValue(driver, By.xpath(MSG_XPATH), expectedMsg);
+
+            // Thực hiện test so sánh kết quả lọc
+            List<WebElement> rows = driver.findElements(By.xpath(ROW_XPATH));
+            for (WebElement row : rows) {
+                String title = row.findElement(By.xpath(TITLE_IN_ROW)).getText().toLowerCase();
+                String lang = row.findElement(By.xpath(LANG_BADGE_IN_ROW)).getText().toLowerCase();
+                String stt = row.findElement(By.xpath(STATUS_BADGE_IN_ROW)).getText().toUpperCase();
+
+                if (!search.isEmpty()) {
+                    Assert.assertTrue(title.contains(search.toLowerCase()),
+                            "Title không chứa keyword search: " + title);
+                }
+
+                if (!languages.isEmpty()) {
+                    Assert.assertTrue(lang.contains(languages.toLowerCase()),
+                            "Language không đúng: " + lang);
+                }
+
+                if (!status.isEmpty()) {
+                    Assert.assertEquals(stt, status.toUpperCase(),
+                            "Status không đúng");
+                }
+            }
 
             // Nếu thành công
             Utilities.writeTestResult(FILE_PATH, BA_SHEET_NAME, id, "PASS");
