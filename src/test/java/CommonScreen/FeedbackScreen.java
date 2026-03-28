@@ -225,6 +225,9 @@ public class FeedbackScreen {
 	}
 	
 	public static void inputYourFeedback(WebDriver driver, By locator, String yourFeedback, String expectedValue) {
+	    if (yourFeedback == null || yourFeedback.isBlank() || yourFeedback.isEmpty()) {
+	        return;
+	    }
 
 	    WebElement textarea = driver.findElement(locator);
 	    JavascriptExecutor js = (JavascriptExecutor) driver;
